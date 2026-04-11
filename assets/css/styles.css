@@ -1,0 +1,133 @@
+/* ===== ROOT COLORS ===== */
+:root {
+  --primary: #A78BFA;
+  --accent: #F472B6;
+  --background: #FAFAFA;
+  --text: #1F2937;
+  --card: #FFFFFF;
+}
+
+/* ===== GLOBAL ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.header h1 {
+  color: var(--primary);
+}
+
+.header p {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* ===== CARD STYLE ===== */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* ===== FORM ===== */
+.task-form h2 {
+  margin-bottom: 1rem;
+}
+
+.task-form input {
+  width: 100%;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* ===== BUTTON ===== */
+button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: var(--accent);
+}
+
+/* ===== TASK LIST ===== */
+.task-list h2 {
+  margin-bottom: 1rem;
+}
+
+.task-item {
+  padding: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+.task-item button {
+  width: auto;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  margin-right: 5px;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* ===== TASK CONTENT ===== */
+.task-title {
+  font-weight: bold;
+}
+
+.task-meta {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+  .container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .task-form, .task-list {
+    flex: 1;
+  }
+}
+
+#filterSubject {
+  width: 20%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Study Planner</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1>📚 Study Planner</h1>
+    <p id="quote">Stay focused and keep going!</p>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container">
+
+    <!-- ADD TASK FORM -->
+    <section class="task-form card">
+      <h2>Add New Task</h2>
+
+      <input type="text" id="taskTitle" placeholder="Task title">
+
+      <input type="text" id="taskSubject" placeholder="Subject">
+
+      <input type="date" id="taskDate">
+
+      <button id="addTaskBtn">Add Task</button>
+    </section>
+
+    <!-- TASK LIST -->
+    <section class="task-list card">
+      <h2>Your Tasks</h2>
+
+      <select id="filterSubject">
+        <option value="all">All Subjects</option>
+      </select>
+
+      <div id="taskContainer"></div>
+    </section>
+
+  </main>
+
+  <!-- JS -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>
