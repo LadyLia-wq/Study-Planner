@@ -31,15 +31,9 @@ body {
   color: var(--primary);
 }
 
-.header p {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-}
-
 /* ===== CONTAINER ===== */
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: auto;
   padding: 1rem;
 }
@@ -52,11 +46,65 @@ body {
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   transition: transform 0.2s, box-shadow 0.2s;
+  height: 520px;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* Scrollable inner area — takes up remaining space inside the card */
+.card-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Subtle custom scrollbar */
+.card-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.card-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.card-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* ===== QUOTE BLOCK (inside task form) ===== */
+.quote-block {
+  background: #f5f0ff;
+  border-left: 3px solid var(--primary);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.quote-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.quote-block p {
+  font-size: 0.85rem;
+  color: #555;
+  font-style: italic;
+  margin: 0;
 }
 
 /* ===== FORM ===== */
@@ -72,10 +120,19 @@ body {
   border-radius: 8px;
 }
 
+/* ===== TASK ITEM CARD ===== */
 .task-item {
-  padding: 0.8rem;
-  border-bottom: 1px solid #eee;
+  background: var(--card);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #f0f0f0;
   animation: fadeIn 0.3s ease-in;
+}
+
+.task-item:last-child {
+  margin-bottom: 0;
 }
 
 @keyframes fadeIn {
@@ -117,20 +174,11 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-.task-item {
-  padding: 0.8rem;
-  border-bottom: 1px solid #eee;
-}
-
 .task-item button {
   width: auto;
   padding: 5px 10px;
   font-size: 0.8rem;
   margin-right: 5px;
-}
-
-.task-item:last-child {
-  border-bottom: none;
 }
 
 /* ===== TASK CONTENT ===== */
@@ -148,18 +196,7 @@ button:hover {
   opacity: 0.6;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (min-width: 768px) {
-  .container {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .task-form, .task-list {
-    flex: 1;
-  }
-}
-
+/* ===== FILTER ===== */
 #filterSubject {
   width: 20%;
   margin-bottom: 1rem;
@@ -168,21 +205,56 @@ button:hover {
   border: 1px solid #ddd;
 }
 
+/* ===== PLANNER ===== */
 .planner h2 {
   margin-bottom: 1rem;
 }
 
 .planner-day {
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .planner-day h3 {
   color: var(--primary);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
+/* Individual planner task cards */
 .planner-task {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #f0f0f0;
   font-size: 0.9rem;
-  padding-left: 10px;
-  color: #555;
+  color: #444;
+}
+
+.planner-task:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Large screens — 3 cards side by side */
+@media (min-width: 1024px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem;
+  }
+}
+
+/* Medium screens — task form + task list side by side, planner full width */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .planner {
+    grid-column: 1 / -1;
+  }
 }

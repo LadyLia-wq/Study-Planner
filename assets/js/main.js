@@ -30,11 +30,13 @@ function addTask() {
   };
 
   tasks.push(task);
-
   saveTasks();
-  renderTasks();
 
-  // Clear inputs
+  // Repopulate filter without resetting the selected value
+  populateFilter();
+  renderTasks();
+  renderPlanner();
+
   taskTitle.value = "";
   taskSubject.value = "";
   taskDate.value = "";
@@ -56,24 +58,46 @@ function toggleComplete(id) {
 
   saveTasks();
   renderTasks();
+  renderPlanner();
 }
 
 // Delete task
-function handleDelete(id) {
+function deleteTask(id) {
   const element = event.target.closest(".task-item");
 
   element.classList.add("fade-out");
 
   setTimeout(() => {
-    tasks = deleteTask(tasks, id);
-    saveTasks(tasks);
+    tasks = tasks.filter(task => task.id !== id);
+    saveTasks();
+    populateFilter();
     renderTasks();
+    renderPlanner();
   }, 300);
+}
+
+// Populate filter dropdown — preserves the currently selected value
+function populateFilter() {
+  const currentValue = filterSubject.value;
+  const subjects = [...new Set(tasks.map(task => task.subject))];
+
+  filterSubject.innerHTML = '<option value="all">All Subjects</option>';
+
+  subjects.forEach(subject => {
+    const option = document.createElement("option");
+    option.value = subject;
+    option.textContent = subject;
+    filterSubject.appendChild(option);
+  });
+
+  // Restore previously selected subject if it still exists
+  if (subjects.includes(currentValue)) {
+    filterSubject.value = currentValue;
+  }
 }
 
 // Render tasks
 function renderTasks() {
-  populateFilter();
   const selectedSubject = filterSubject.value;
 
   let filteredTasks = tasks;
@@ -85,78 +109,59 @@ function renderTasks() {
   taskContainer.innerHTML = "";
 
   filteredTasks.forEach(task => {
-  const div = document.createElement("div");
-  div.classList.add("task-item");
+    const div = document.createElement("div");
+    div.classList.add("task-item");
 
-  // Calculate countdown
-  const today = new Date();
-  const dueDate = new Date(task.date);
-  const timeDiff = dueDate - today;
-  const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    // Calculate countdown
+    const today = new Date();
+    const dueDate = new Date(task.date);
+    const timeDiff = dueDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-  let countdownText = "";
+    let countdownText = "";
+    let countdownColor = "";
 
-  if (daysLeft > 0) {
-    countdownText = `${daysLeft} day(s) left`;
-  } else if (daysLeft === 0) {
-    countdownText = "Due today!";
-  } else {
-    countdownText = "Overdue!";
-  }
+    if (daysLeft > 0) {
+      countdownText = `${daysLeft} day(s) left`;
+      countdownColor = "green";
+    } else if (daysLeft === 0) {
+      countdownText = "Due today!";
+      countdownColor = "orange";
+    } else {
+      countdownText = "Overdue!";
+      countdownColor = "red";
+    }
 
-  div.innerHTML = `
-    <div>
-      <div class="task-title ${task.completed ? 'completed' : ''}">
-        ${task.title}
+    div.innerHTML = `
+      <div>
+        <div class="task-title ${task.completed ? 'completed' : ''}">
+          ${task.title}
+        </div>
+        <div class="task-meta">
+          ${task.subject} • ${task.date}
+        </div>
+        <div style="font-size: 0.8rem; margin-top: 4px; color: ${countdownColor};">
+          ${countdownText}
+        </div>
       </div>
-      <div class="task-meta">
-        ${task.subject} • ${task.date}
+      <div style="margin-top: 8px;">
+        <button onclick="toggleComplete(${task.id})">
+          ${task.completed ? "Undo" : "Complete"}
+        </button>
+        <button onclick="deleteTask(${task.id})" style="background:#ef4444; margin-top:5px;">
+          Delete
+        </button>
       </div>
-      <div style="font-size: 0.8rem; margin-top: 4px; color: ${
-        daysLeft < 0 ? 'red' : daysLeft === 0 ? 'orange' : 'green'
-      };">
-        ${countdownText}
-      </div>
-    </div>
+    `;
 
-    <div style="margin-top: 8px;">
-      <button onclick="toggleComplete(${task.id})">
-        ${task.completed ? "Undo" : "Complete"}
-      </button>
-      <button onclick="deleteTask(${task.id})" style="background:#ef4444; margin-top:5px;">
-        Delete
-      </button>
-    </div>
-  `;
-
-  taskContainer.appendChild(div);
-});
-}
-
-//populate dropdown
-function populateFilter() {
-  const subjects = [...new Set(tasks.map(task => task.subject))];
-
-  filterSubject.innerHTML = '<option value="all">All Subjects</option>';
-
-  subjects.forEach(subject => {
-    const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject;
-    filterSubject.appendChild(option);
+    taskContainer.appendChild(div);
   });
 }
 
-filterSubject.addEventListener("change", renderTasks);
-
-// Load tasks on page start
-renderTasks();
-
-//PLANNER VIEW
+// Render planner — each task in its own card
 function renderPlanner() {
   plannerContainer.innerHTML = "";
 
-  // Group tasks by date
   const grouped = {};
 
   tasks.forEach(task => {
@@ -166,7 +171,6 @@ function renderPlanner() {
     grouped[task.date].push(task);
   });
 
-  // Sort dates
   const sortedDates = Object.keys(grouped).sort();
 
   sortedDates.forEach(date => {
@@ -175,36 +179,38 @@ function renderPlanner() {
 
     const dateHeader = document.createElement("h3");
     dateHeader.textContent = new Date(date).toDateString();
-
     dayDiv.appendChild(dateHeader);
 
     grouped[date].forEach(task => {
-      const taskItem = document.createElement("div");
-      taskItem.classList.add("planner-task");
-
-      taskItem.textContent = `• ${task.title} (${task.subject})`;
-
-      dayDiv.appendChild(taskItem);
+      const taskCard = document.createElement("div");
+      taskCard.classList.add("planner-task");
+      taskCard.textContent = `• ${task.title} (${task.subject})`;
+      dayDiv.appendChild(taskCard);
     });
 
     plannerContainer.appendChild(dayDiv);
   });
 }
-renderPlanner();
+
+// Filter change — preserve selected value naturally since renderTasks reads it directly
+filterSubject.addEventListener("change", renderTasks);
 
 // Event listener
 addTaskBtn.addEventListener("click", addTask);
 
+// Initial render
+populateFilter();
+renderTasks();
+renderPlanner();
+
+// Quote fetcher
 async function fetchQuote() {
   try {
     const response = await fetch("https://api.allorigins.win/raw?url=https://zenquotes.io/api/random");
+    if (!response.ok) throw new Error("Network response was not ok");
     const data = await response.json();
-
-    const quoteText = data[0].q;
-    const quoteAuthor = data[0].a;
-
     document.getElementById("quote").textContent =
-      `"${quoteText}" — ${quoteAuthor}`;
+      `"${data[0].q}" — ${data[0].a}`;
   } catch (error) {
     document.getElementById("quote").textContent =
       "Stay focused and keep going!";
