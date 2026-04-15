@@ -5,6 +5,7 @@ const taskDate = document.getElementById("taskDate");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskContainer = document.getElementById("taskContainer");
 const filterSubject = document.getElementById("filterSubject");
+const plannerContainer = document.getElementById("plannerContainer");
 
 // Load tasks from localStorage
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -58,11 +59,16 @@ function toggleComplete(id) {
 }
 
 // Delete task
-function deleteTask(id) {
-  tasks = tasks.filter(task => task.id !== id);
+function handleDelete(id) {
+  const element = event.target.closest(".task-item");
 
-  saveTasks();
-  renderTasks();
+  element.classList.add("fade-out");
+
+  setTimeout(() => {
+    tasks = deleteTask(tasks, id);
+    saveTasks(tasks);
+    renderTasks();
+  }, 300);
 }
 
 // Render tasks
@@ -100,7 +106,7 @@ function renderTasks() {
 
   div.innerHTML = `
     <div>
-      <div class="task-title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
+      <div class="task-title ${task.completed ? 'completed' : ''}">
         ${task.title}
       </div>
       <div class="task-meta">
@@ -145,6 +151,46 @@ filterSubject.addEventListener("change", renderTasks);
 
 // Load tasks on page start
 renderTasks();
+
+//PLANNER VIEW
+function renderPlanner() {
+  plannerContainer.innerHTML = "";
+
+  // Group tasks by date
+  const grouped = {};
+
+  tasks.forEach(task => {
+    if (!grouped[task.date]) {
+      grouped[task.date] = [];
+    }
+    grouped[task.date].push(task);
+  });
+
+  // Sort dates
+  const sortedDates = Object.keys(grouped).sort();
+
+  sortedDates.forEach(date => {
+    const dayDiv = document.createElement("div");
+    dayDiv.classList.add("planner-day");
+
+    const dateHeader = document.createElement("h3");
+    dateHeader.textContent = new Date(date).toDateString();
+
+    dayDiv.appendChild(dateHeader);
+
+    grouped[date].forEach(task => {
+      const taskItem = document.createElement("div");
+      taskItem.classList.add("planner-task");
+
+      taskItem.textContent = `• ${task.title} (${task.subject})`;
+
+      dayDiv.appendChild(taskItem);
+    });
+
+    plannerContainer.appendChild(dayDiv);
+  });
+}
+renderPlanner();
 
 // Event listener
 addTaskBtn.addEventListener("click", addTask);

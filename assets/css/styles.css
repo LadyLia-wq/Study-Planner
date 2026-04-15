@@ -12,6 +12,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
 
 body {
@@ -50,6 +51,12 @@ body {
   padding: 1rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
 }
 
 /* ===== FORM ===== */
@@ -65,6 +72,29 @@ body {
   border-radius: 8px;
 }
 
+.task-item {
+  padding: 0.8rem;
+  border-bottom: 1px solid #eee;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 0.3s ease;
+}
+
 /* ===== BUTTON ===== */
 button {
   background-color: var(--primary);
@@ -75,6 +105,7 @@ button {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
+  transform: scale(0.95);
 }
 
 button:hover {
@@ -112,6 +143,11 @@ button:hover {
   color: #666;
 }
 
+.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (min-width: 768px) {
   .container {
@@ -130,4 +166,23 @@ button:hover {
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid #ddd;
+}
+
+.planner h2 {
+  margin-bottom: 1rem;
+}
+
+.planner-day {
+  margin-bottom: 1rem;
+}
+
+.planner-day h3 {
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+
+.planner-task {
+  font-size: 0.9rem;
+  padding-left: 10px;
+  color: #555;
 }
